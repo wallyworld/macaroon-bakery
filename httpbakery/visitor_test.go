@@ -29,7 +29,7 @@ func (*VisitorSuite) TestGetInteractionMethodsGetFailure(c *gc.C) {
 
 	methods, err := httpbakery.GetInteractionMethods(http.DefaultClient, mustParseURL(srv.URL))
 	c.Assert(methods, gc.IsNil)
-	c.Assert(err, gc.ErrorMatches, `GET .*: cannot unmarshal error response \(status 418 I'm a teapot\): unexpected content type text/plain; want application/json; content: failure`)
+	c.Assert(err, gc.ErrorMatches, `Get .*: cannot unmarshal error response \(status 418 I'm a teapot\): unexpected content type text/plain; want application/json; content: failure`)
 }
 
 func (*VisitorSuite) TestGetInteractionMethodsSuccess(c *gc.C) {

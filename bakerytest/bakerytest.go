@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/juju/httprequest"
 	"gopkg.in/errgo.v1"
+	"gopkg.in/httprequest.v1"
 
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery"
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery/checkers"

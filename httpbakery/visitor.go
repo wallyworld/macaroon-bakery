@@ -1,11 +1,12 @@
 package httpbakery
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 
-	"github.com/juju/httprequest"
 	"gopkg.in/errgo.v1"
+	"gopkg.in/httprequest.v1"
 )
 
 // ErrMethodNotSupported is the error that a Visitor implementation
@@ -109,7 +110,7 @@ func GetInteractionMethods(client httprequest.Doer, u *url.URL) (map[string]*url
 	}
 	req.Header.Set("Accept", "application/json")
 	var methodURLStrs map[string]string
-	if err := httpReqClient.Do(req, nil, &methodURLStrs); err != nil {
+	if err := httpReqClient.Do(context.Background(), req, &methodURLStrs); err != nil {
 		return nil, errgo.Mask(err)
 	}
 	// Make all the URLs relative to the request URL.

@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/juju/httprequest"
 	jujutesting "github.com/juju/testing"
 	"github.com/juju/testing/httptesting"
 	gc "gopkg.in/check.v1"
+	"gopkg.in/httprequest.v1"
 	"gopkg.in/juju/environschema.v1"
 	esform "gopkg.in/juju/environschema.v1/form"
 
@@ -56,13 +56,13 @@ var formLoginTests = []struct {
 	opts: dischargeOptions{
 		getError: true,
 	},
-	expectError: `cannot get discharge from ".*": cannot start interactive session: cannot get schema: GET .*: httprequest: test error`,
+	expectError: `cannot get discharge from ".*": cannot start interactive session: cannot get schema: Get .*: test error`,
 }, {
 	about: "error submitting form",
 	opts: dischargeOptions{
 		postError: true,
 	},
-	expectError: `cannot get discharge from ".*": cannot start interactive session: cannot submit form: POST .*: httprequest: test error`,
+	expectError: `cannot get discharge from ".*": cannot start interactive session: cannot submit form: Post .*: test error`,
 }, {
 	about: "no schema",
 	opts: dischargeOptions{

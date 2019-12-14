@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/juju/httprequest"
 	jc "github.com/juju/testing/checkers"
 	"github.com/juju/testing/httptesting"
 	gc "gopkg.in/check.v1"
+	"gopkg.in/httprequest.v1"
 	"gopkg.in/macaroon.v2"
 
 	"gopkg.in/macaroon-bakery.v2-unstable/httpbakery"

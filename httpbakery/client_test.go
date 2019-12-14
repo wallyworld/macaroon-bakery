@@ -15,11 +15,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/juju/httprequest"
 	jujutesting "github.com/juju/testing"
 	jc "github.com/juju/testing/checkers"
 	gc "gopkg.in/check.v1"
 	"gopkg.in/errgo.v1"
+	"gopkg.in/httprequest.v1"
 	"gopkg.in/macaroon.v2"
 
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery"
@@ -669,7 +669,7 @@ var dischargeWithVisitURLErrorTests = []struct {
 }{{
 	about: "error message",
 	respond: func(w http.ResponseWriter) {
-		httprequest.ErrorMapper(httpbakery.ErrorToResponse).WriteError(w, fmt.Errorf("an error"))
+		httpbakery.ErrorMapper(httpbakery.ErrorToResponse).WriteError(w, fmt.Errorf("an error"))
 	},
 	expectError: `cannot get discharge from ".*": failed to acquire macaroon after waiting: third party refused discharge: an error`,
 }, {
@@ -1001,7 +1001,7 @@ func clientRequestWithCookies(c *gc.C, u string, macaroons macaroon.Slice) *http
 	return client
 }
 
-var handleErrors = httprequest.ErrorMapper(httpbakery.ErrorToResponse).HandleErrors
+var handleErrors = httpbakery.ErrorMapper(httpbakery.ErrorToResponse).HandleErrors
 
 type serverHandlerParams struct {
 	// service holds the service that will be used to check incoming
@@ -1044,7 +1044,7 @@ func serverHandler(hp serverHandlerParams) http.Handler {
 	if hp.checker == nil {
 		hp.checker = isChecker("something")
 	}
-	h := handleErrors(func(p httprequest.Params) error {
+	h := handleErrors(func(p httpbakery.Params) error {
 		if hp.alwaysReadBody {
 			defer ioutil.ReadAll(p.Request.Body)
 		}

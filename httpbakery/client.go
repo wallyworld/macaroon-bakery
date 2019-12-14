@@ -168,10 +168,17 @@ func NewClient() *Client {
 // returned. See OpenWebBrowser for a possible implementation of
 // visitWebPage.
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
+	// Adapt use of new httprequest.v1 repo semantics.
+	var body io.ReadSeeker
 	if req.Body != nil {
-		return nil, fmt.Errorf("body unexpectedly provided in request - use DoWithBody")
+		r, ok := req.Body.(io.ReadSeeker)
+		if !ok {
+			return nil, fmt.Errorf("body unexpectedly provided in request - use DoWithBody")
+		}
+		body = r
+		req.Body = nil
 	}
-	return c.DoWithBody(req, nil)
+	return c.DoWithBody(req, body)
 }
 
 // DischargeAll attempts to acquire discharge macaroons for all the

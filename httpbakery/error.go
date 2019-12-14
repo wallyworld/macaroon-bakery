@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/juju/httprequest"
 	"gopkg.in/errgo.v1"
+	"gopkg.in/httprequest.v1"
 	"gopkg.in/macaroon.v2"
 )
 
@@ -28,9 +28,9 @@ const (
 )
 
 var (
-	errorMapper httprequest.ErrorMapper = ErrorToResponse
-	handleJSON                          = errorMapper.HandleJSON
-	writeError                          = errorMapper.WriteError
+	errorMapper ErrorMapper = ErrorToResponse
+	handleJSON              = errorMapper.HandleJSON
+	writeError              = errorMapper.WriteError
 )
 
 // Error holds the type of a response from an httpbakery HTTP request,

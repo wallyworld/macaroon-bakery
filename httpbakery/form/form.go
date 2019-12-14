@@ -2,12 +2,13 @@
 package form
 
 import (
+	"context"
 	"net/url"
 
-	"github.com/juju/httprequest"
 	"github.com/juju/loggo"
 	"golang.org/x/net/publicsuffix"
 	"gopkg.in/errgo.v1"
+	"gopkg.in/httprequest.v1"
 	"gopkg.in/juju/environschema.v1"
 	"gopkg.in/juju/environschema.v1/form"
 
@@ -112,8 +113,9 @@ func (v Visitor) visitWebPage(doer httprequest.Doer, methodURLs map[string]*url.
 	httpReqClient := &httprequest.Client{
 		Doer: doer,
 	}
+	ctx := context.Background()
 	var s SchemaResponse
-	if err := httpReqClient.CallURL(schemaURL.String(), &SchemaRequest{}, &s); err != nil {
+	if err := httpReqClient.CallURL(ctx, schemaURL.String(), &SchemaRequest{}, &s); err != nil {
 		return errgo.Notef(err, "cannot get schema")
 	}
 	if len(s.Schema) == 0 {
@@ -135,7 +137,7 @@ func (v Visitor) visitWebPage(doer httprequest.Doer, methodURLs map[string]*url.
 			Form: form,
 		},
 	}
-	if err := httpReqClient.CallURL(schemaURL.String(), &lr, nil); err != nil {
+	if err := httpReqClient.CallURL(ctx, schemaURL.String(), &lr, nil); err != nil {
 		return errgo.Notef(err, "cannot submit form")
 	}
 	return nil

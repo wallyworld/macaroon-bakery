@@ -1,14 +1,15 @@
 package bakerytest_test
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"sync"
 
-	"github.com/juju/httprequest"
 	gc "gopkg.in/check.v1"
+	"gopkg.in/httprequest.v1"
 
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery"
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery/checkers"
@@ -167,7 +168,7 @@ func (s *suite) TestInteractiveDischarger(c *gc.C) {
 	client := httpbakery.NewClient()
 	client.VisitWebPage = func(u *url.URL) error {
 		var c httprequest.Client
-		return c.Get(u.String(), nil)
+		return c.Get(context.Background(), u.String(), nil)
 	}
 	ms, err := client.DischargeAll(m)
 	c.Assert(err, gc.IsNil)
@@ -204,7 +205,7 @@ func (s *suite) TestLoginDischargerError(c *gc.C) {
 	client.VisitWebPage = func(u *url.URL) error {
 		c.Logf("visiting %s", u)
 		var c httprequest.Client
-		return c.Get(u.String(), nil)
+		return c.Get(context.Background(), u.String(), nil)
 	}
 	_, err = client.DischargeAll(m)
 	c.Assert(err, gc.ErrorMatches, `cannot get discharge from ".*": failed to acquire macaroon after waiting: third party refused discharge: test error`)
@@ -237,7 +238,7 @@ func (s *suite) TestInteractiveDischargerURL(c *gc.C) {
 	client := httpbakery.NewClient()
 	client.VisitWebPage = func(u *url.URL) error {
 		var c httprequest.Client
-		return c.Get(u.String(), nil)
+		return c.Get(context.Background(), u.String(), nil)
 	}
 	ms, err := client.DischargeAll(m)
 	c.Assert(err, gc.IsNil)

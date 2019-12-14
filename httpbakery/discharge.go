@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"path"
 
-	"github.com/juju/httprequest"
-	"github.com/julienschmidt/httprouter"
 	"gopkg.in/errgo.v1"
 	"gopkg.in/macaroon.v2"
 
@@ -71,7 +69,7 @@ type dischargeResponse struct {
 	Macaroon *macaroon.Macaroon `json:",omitempty"`
 }
 
-func (d *dischargeHandler) serveDischarge(p httprequest.Params) (interface{}, error) {
+func (d *dischargeHandler) serveDischarge(p Params) (interface{}, error) {
 	r, err := d.serveDischarge1(p)
 	if err != nil {
 		logger.Debugf("serveDischarge -> error %#v", err)
@@ -81,7 +79,7 @@ func (d *dischargeHandler) serveDischarge(p httprequest.Params) (interface{}, er
 	return r, err
 }
 
-func (d *dischargeHandler) serveDischarge1(p httprequest.Params) (interface{}, error) {
+func (d *dischargeHandler) serveDischarge1(p Params) (interface{}, error) {
 	logger.Debugf("dischargeHandler.serveDischarge {")
 	defer logger.Debugf("}")
 	if p.Request.Method != "POST" {
@@ -112,7 +110,7 @@ type publicKeyResponse struct {
 	PublicKey *bakery.PublicKey
 }
 
-func (d *dischargeHandler) servePublicKey(httprequest.Params) (interface{}, error) {
+func (d *dischargeHandler) servePublicKey(Params) (interface{}, error) {
 	return publicKeyResponse{d.svc.PublicKey()}, nil
 }
 
@@ -125,7 +123,7 @@ func randomBytes(n int) ([]byte, error) {
 	return b, nil
 }
 
-func mkHandler(h httprouter.Handle) http.Handler {
+func mkHandler(h Handle) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		h(w, req, nil)
 	})
