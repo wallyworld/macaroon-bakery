@@ -7,7 +7,7 @@ import (
 	"github.com/juju/testing"
 	jc "github.com/juju/testing/checkers"
 	gc "gopkg.in/check.v1"
-	"gopkg.in/macaroon.v2-unstable"
+	"gopkg.in/macaroon.v2"
 
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery"
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery/checkers"
@@ -218,7 +218,7 @@ func (s *ServiceSuite) TestNeedDeclared(c *gc.C) {
 		c.Assert(err, gc.IsNil)
 
 		// Sneaky client adds a first party caveat.
-		m.AddFirstPartyCaveat(checkers.DeclaredCaveat("foo", "c").Condition)
+		m.AddFirstPartyCaveat([]byte(checkers.DeclaredCaveat("foo", "c").Condition))
 		return m, nil
 	})
 	c.Assert(err, gc.IsNil)

@@ -13,7 +13,7 @@ import (
 	"github.com/juju/loggo"
 	"github.com/rogpeppe/fastuuid"
 	"gopkg.in/errgo.v1"
-	"gopkg.in/macaroon.v2-unstable"
+	"gopkg.in/macaroon.v2"
 
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery/checkers"
 )
@@ -217,7 +217,7 @@ func (svc *Service) NewMacaroon(caveats []checkers.Caveat) (*macaroon.Macaroon, 
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
-	m, err := macaroon.New(rootKey, id, svc.location)
+	m, err := macaroon.New(rootKey, id, svc.location, macaroon.LatestVersion)
 	if err != nil {
 		return nil, errgo.Notef(err, "cannot bake macaroon")
 	}
@@ -267,7 +267,7 @@ func LocalThirdPartyCaveat(key *PublicKey) checkers.Caveat {
 // for a way of creating such caveats.
 func (svc *Service) AddCaveat(m *macaroon.Macaroon, cav checkers.Caveat) error {
 	if cav.Location == "" {
-		m.AddFirstPartyCaveat(cav.Condition)
+		m.AddFirstPartyCaveat([]byte(cav.Condition))
 		return nil
 	}
 	var thirdPartyPub *PublicKey
@@ -333,7 +333,7 @@ func Discharge(key *KeyPair, checker ThirdPartyChecker, id []byte) (*macaroon.Ma
 	// be stored persistently. Indeed, it would be a problem if
 	// we did, because then the macaroon could potentially be used
 	// for normal authorization with the third party.
-	m, err := macaroon.New(cavInfo.RootKey, id, "")
+	m, err := macaroon.New(cavInfo.RootKey, id, "", macaroon.LatestVersion)
 	if err != nil {
 		return nil, nil, errgo.Mask(err)
 	}

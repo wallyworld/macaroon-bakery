@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	gc "gopkg.in/check.v1"
-	"gopkg.in/macaroon.v2-unstable"
+	"gopkg.in/macaroon.v2"
 
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery"
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery/checkers"
@@ -20,7 +20,7 @@ func alwaysOK(string) error {
 
 func (*DischargeSuite) TestDischargeAllNoDischarges(c *gc.C) {
 	rootKey := []byte("root key")
-	m, err := macaroon.New(rootKey, []byte("id0"), "loc0")
+	m, err := macaroon.New(rootKey, []byte("id0"), "loc0", macaroon.LatestVersion)
 	c.Assert(err, gc.IsNil)
 	ms, err := bakery.DischargeAll(m, noDischarge(c))
 	c.Assert(err, gc.IsNil)
@@ -33,7 +33,7 @@ func (*DischargeSuite) TestDischargeAllNoDischarges(c *gc.C) {
 
 func (*DischargeSuite) TestDischargeAllManyDischarges(c *gc.C) {
 	rootKey := []byte("root key")
-	m0, err := macaroon.New(rootKey, []byte("id0"), "location0")
+	m0, err := macaroon.New(rootKey, []byte("id0"), "location0", macaroon.LatestVersion)
 	c.Assert(err, gc.IsNil)
 	totalRequired := 40
 	id := 1
@@ -51,7 +51,7 @@ func (*DischargeSuite) TestDischargeAllManyDischarges(c *gc.C) {
 	}
 	addCaveats(m0)
 	getDischarge := func(cav macaroon.Caveat) (*macaroon.Macaroon, error) {
-		m, err := macaroon.New([]byte("root key "+string(cav.Id)), cav.Id, "")
+		m, err := macaroon.New([]byte("root key "+string(cav.Id)), cav.Id, "", macaroon.LatestVersion)
 		c.Assert(err, gc.IsNil)
 		addCaveats(m)
 		return m, nil

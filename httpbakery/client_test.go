@@ -20,7 +20,7 @@ import (
 	jc "github.com/juju/testing/checkers"
 	gc "gopkg.in/check.v1"
 	"gopkg.in/errgo.v1"
-	"gopkg.in/macaroon.v2-unstable"
+	"gopkg.in/macaroon.v2"
 
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery"
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery/checkers"
@@ -280,7 +280,7 @@ func (s *ClientSuite) TestDischargeServerWithMacaraqOnDischarge(c *gc.C) {
 }
 
 func (s *ClientSuite) TestVersion0Generates407Status(c *gc.C) {
-	m, err := macaroon.New([]byte("root key"), []byte("id"), "location")
+	m, err := macaroon.New([]byte("root key"), []byte("id"), "location", macaroon.LatestVersion)
 	c.Assert(err, gc.IsNil)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		httpbakery.WriteDischargeRequiredErrorForRequest(w, m, "", errgo.New("foo"), req)
@@ -292,7 +292,7 @@ func (s *ClientSuite) TestVersion0Generates407Status(c *gc.C) {
 }
 
 func (s *ClientSuite) TestVersion1Generates401Status(c *gc.C) {
-	m, err := macaroon.New([]byte("root key"), []byte("id"), "location")
+	m, err := macaroon.New([]byte("root key"), []byte("id"), "location", macaroon.LatestVersion)
 	c.Assert(err, gc.IsNil)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		httpbakery.WriteDischargeRequiredErrorForRequest(w, m, "", errgo.New("foo"), req)
@@ -319,7 +319,7 @@ func newHTTPDischarger(locator bakery.PublicKeyLocator, checker func(svc *bakery
 
 func (s *ClientSuite) TestDischargeAcquirer(c *gc.C) {
 	rootKey := []byte("secret")
-	m, err := macaroon.New(rootKey, nil, "here")
+	m, err := macaroon.New(rootKey, nil, "here", macaroon.LatestVersion)
 	c.Assert(err, gc.IsNil)
 
 	dischargeRootKey := []byte("shared root key")
@@ -327,7 +327,7 @@ func (s *ClientSuite) TestDischargeAcquirer(c *gc.C) {
 	err = m.AddThirdPartyCaveat(dischargeRootKey, thirdPartyCaveatId, "there")
 	c.Assert(err, gc.IsNil)
 
-	dm, err := macaroon.New(dischargeRootKey, thirdPartyCaveatId, "there")
+	dm, err := macaroon.New(dischargeRootKey, thirdPartyCaveatId, "there", macaroon.LatestVersion)
 	c.Assert(err, gc.IsNil)
 
 	ta := &testAcquirer{dischargeMacaroon: dm}
@@ -361,7 +361,7 @@ type testAcquirer struct {
 // AcquireDischarge implements httpbakery.DischargeAcquirer.
 func (ta *testAcquirer) AcquireDischarge(cav macaroon.Caveat) (*macaroon.Macaroon, error) {
 	ta.acquireCaveat = cav
-	err := ta.dischargeMacaroon.AddFirstPartyCaveat("must foo")
+	err := ta.dischargeMacaroon.AddFirstPartyCaveat([]byte("must foo"))
 	if err != nil {
 		return nil, err
 	}

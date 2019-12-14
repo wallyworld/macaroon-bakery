@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"gopkg.in/errgo.v1"
-	"gopkg.in/macaroon.v2-unstable"
+	"gopkg.in/macaroon.v2"
 )
 
 // DeclaredCaveat returns a "declared" caveat asserting that the given key is

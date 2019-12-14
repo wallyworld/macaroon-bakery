@@ -8,7 +8,7 @@ import (
 	jc "github.com/juju/testing/checkers"
 	gc "gopkg.in/check.v1"
 	"gopkg.in/errgo.v1"
-	"gopkg.in/macaroon.v2-unstable"
+	"gopkg.in/macaroon.v2"
 
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery"
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery/checkers"
@@ -415,11 +415,11 @@ func (*CheckersSuite) TestInferDeclared(c *gc.C) {
 		c.Logf("test %d: %s", i, test.about)
 		ms := make(macaroon.Slice, len(test.caveats))
 		for i, caveats := range test.caveats {
-			m, err := macaroon.New(nil, []byte(fmt.Sprint(i)), "")
+			m, err := macaroon.New(nil, []byte(fmt.Sprint(i)), "", macaroon.LatestVersion)
 			c.Assert(err, gc.IsNil)
 			for _, cav := range caveats {
 				if cav.Location == "" {
-					m.AddFirstPartyCaveat(cav.Condition)
+					m.AddFirstPartyCaveat([]byte(cav.Condition))
 				} else {
 					m.AddThirdPartyCaveat(nil, []byte(cav.Condition), cav.Location)
 				}

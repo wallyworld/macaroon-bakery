@@ -59,7 +59,7 @@ func (*VisitorSuite) TestGetInteractionMethodsInvalidURL(c *gc.C) {
 
 	methods, err := httpbakery.GetInteractionMethods(http.DefaultClient, mustParseURL(srv.URL))
 	c.Assert(methods, gc.IsNil)
-	c.Assert(err, gc.ErrorMatches, `invalid URL for interaction method "method": parse :::: missing protocol scheme`)
+	c.Assert(err, gc.ErrorMatches, `invalid URL for interaction method "method": parse ":::": missing protocol scheme`)
 }
 
 func (*VisitorSuite) TestMultiVisitorNoUserInteractionMethod(c *gc.C) {
@@ -134,7 +134,7 @@ func (*VisitorSuite) TestUserInteractionFallback(c *gc.C) {
 	v := httpbakery.NewMultiVisitor(
 		visitorFunc(func(_ *httpbakery.Client, m map[string]*url.URL) error {
 			c.Check(m, jc.DeepEquals, map[string]*url.URL{
-				"method": mustParseURL("http://somewhere/something"),
+				"method":                         mustParseURL("http://somewhere/something"),
 				httpbakery.UserInteractionMethod: mustParseURL(srv.URL),
 			})
 			called++

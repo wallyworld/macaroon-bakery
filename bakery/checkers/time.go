@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"gopkg.in/errgo.v1"
-	"gopkg.in/macaroon.v2-unstable"
+	"gopkg.in/macaroon.v2"
 )
 
 var timeNow = time.Now

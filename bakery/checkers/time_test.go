@@ -4,7 +4,7 @@ import (
 	"time"
 
 	gc "gopkg.in/check.v1"
-	"gopkg.in/macaroon.v2-unstable"
+	"gopkg.in/macaroon.v2"
 
 	"gopkg.in/macaroon-bakery.v2-unstable/bakery/checkers"
 )
@@ -157,12 +157,12 @@ func (s *timeSuite) TestMacaroonsExpireTime(c *gc.C) {
 }
 
 func mustNewMacaroon(cavs ...string) *macaroon.Macaroon {
-	m, err := macaroon.New(nil, nil, "")
+	m, err := macaroon.New(nil, nil, "", macaroon.LatestVersion)
 	if err != nil {
 		panic(err)
 	}
 	for _, cav := range cavs {
-		if err := m.AddFirstPartyCaveat(cav); err != nil {
+		if err := m.AddFirstPartyCaveat([]byte(cav)); err != nil {
 			panic(err)
 		}
 	}

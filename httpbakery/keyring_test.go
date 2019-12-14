@@ -81,7 +81,7 @@ func (s *KeyringSuite) TestCustomHTTPClient(c *gc.C) {
 	}
 	kr := httpbakery.NewPublicKeyRing(client, nil)
 	pk, err := kr.PublicKeyForLocation("https://0.1.2.3/")
-	c.Assert(err, gc.ErrorMatches, `cannot get public key from "https://0.1.2.3/publickey": Get https://0.1.2.3/publickey: custom round trip error`)
+	c.Assert(err, gc.ErrorMatches, `cannot get public key from "https://0.1.2.3/publickey": Get "https://0.1.2.3/publickey": custom round trip error`)
 	c.Assert(pk, gc.IsNil)
 }
 
@@ -104,7 +104,7 @@ func (s *KeyringSuite) TestPublicKeyWrongURL(c *gc.C) {
 	client := httpbakery.NewHTTPClient()
 	_, err := httpbakery.PublicKeyForLocation(client, "http://localhost:0")
 	c.Assert(err, gc.ErrorMatches,
-		`cannot get public key from "http://localhost:0/publickey": Get http://localhost:0/publickey: dial tcp 127.0.0.1:0: .*connection refused`)
+		`cannot get public key from "http://localhost:0/publickey": Get "http://localhost:0/publickey": dial tcp 127.0.0.1:0: .*connection refused`)
 }
 
 func (s *KeyringSuite) TestPublicKeyReturnsInvalidJSON(c *gc.C) {
