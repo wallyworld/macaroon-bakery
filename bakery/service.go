@@ -6,6 +6,7 @@ package bakery
 
 import (
 	"bytes"
+	"context"
 	"crypto/rand"
 	"fmt"
 	"strings"
@@ -134,9 +135,9 @@ func (svc *Service) Check(ms macaroon.Slice, checker FirstPartyChecker) error {
 		id = id[0:i]
 	}
 
-	rootKey, err := svc.store.Get(id)
+	rootKey, err := svc.store.Get(context.TODO(), id)
 	if err != nil {
-		if errgo.Cause(err) == ErrNotFound {
+		if msg := errgo.Cause(err).Error(); msg == "not found" || msg == ErrNotFound.Error() {
 			// If the macaroon was not found, it is probably
 			// because it's been removed after time-expiry,
 			// so return a verification error.
@@ -230,7 +231,7 @@ func (svc *Service) NewMacaroon(caveats []checkers.Caveat) (*macaroon.Macaroon, 
 }
 
 func (svc *Service) rootKey() ([]byte, []byte, error) {
-	rootKey, id, err := svc.store.RootKey()
+	rootKey, id, err := svc.store.RootKey(context.TODO())
 	if err != nil {
 		return nil, nil, errgo.Mask(err)
 	}

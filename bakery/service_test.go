@@ -1,6 +1,7 @@
 package bakery_test
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -432,7 +433,7 @@ func (s *ServiceSuite) TestNewMacaroonWithExplicitStorage(c *gc.C) {
 	c.Assert(err, gc.IsNil)
 
 	store := bakery.NewMemStorage()
-	key, id, err := store.RootKey()
+	key, id, err := store.RootKey(context.TODO())
 	c.Assert(err, gc.IsNil)
 
 	svc = svc.WithStore(store)
@@ -475,7 +476,7 @@ func (s *ServiceSuite) TestNewMacaroonWithExplicitStorage(c *gc.C) {
 
 func (s *ServiceSuite) TestNewMacaroonWithStorageInParams(c *gc.C) {
 	store := bakery.NewMemStorage()
-	_, id, err := store.RootKey()
+	_, id, err := store.RootKey(context.TODO())
 	c.Assert(err, gc.IsNil)
 
 	// Check that we can create a bakery with the root key store

@@ -1,6 +1,7 @@
 package mgostorage
 
 import (
+	"context"
 	"crypto/rand"
 	"fmt"
 	"sync"
@@ -215,7 +216,7 @@ type storage struct {
 }
 
 // Get implements bakery.RootKeyStorage.Get.
-func (s *storage) Get(id []byte) ([]byte, error) {
+func (s *storage) Get(ctx context.Context, id []byte) ([]byte, error) {
 	s.keys.mu.Lock()
 	defer s.keys.mu.Unlock()
 
@@ -257,7 +258,7 @@ func (s *storage) getLegacyFromMongo(id string) (rootKey, error) {
 // RootKey implements bakery.RootKeyStorage.RootKey by
 // returning an existing key from the cache when compatible
 // with the current policy.
-func (s *storage) RootKey() ([]byte, []byte, error) {
+func (s *storage) RootKey(ctx context.Context) ([]byte, []byte, error) {
 	if key := s.rootKeyFromCache(); key.isValid() {
 		return key.RootKey, key.Id, nil
 	}
